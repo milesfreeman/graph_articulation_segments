@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 SEGMENTATION METHODS:
     - Continuous Random Field
     - Edge Convolution GNN (Pytorch)
@@ -7,3 +8,6 @@ SEGMENTATION METHODS:
 DATA GENERATION:
     - Articulate dataset (RPMNet/Sapien)
     - KinectSimulator -> noisy data (various poses)
+=======
+# graph_articulation_segments
+>>>>>>> 400ce2cd32c37b634a93631a16b02fa522b82e20
