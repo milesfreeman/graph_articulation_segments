@@ -40,8 +40,8 @@ parts = ['storage_furniture/cabinet/countertop',
          'storage_furniture/cabinet/cabinet_base subtypes',
          'storage_furniture/cabinet/cabinet_door subcomponents']
 
-NUM_CLASSES = len(parts)
-NUM_INS = FLAGS.num_ins
+NUM_CLASSES = 3
+NUM_INS = 24
 GPU_INDEX = FLAGS.gpu
 
 def predict(data):
@@ -107,11 +107,11 @@ def predict(data):
 
 def main():
     # data_file = sys.argv[1]
-    data_file = 'data/partnet_eval.pkl'
+    data_file = '../TrainData_storage_furniture.pkl'
     with open(data_file, 'rb') as f:
         data = pk.load(f)
     predictions = predict(data)
-    with open('temp.pkl', 'wb') as f:
+    with open('mediary.pkl', 'wb') as f:
         pk.dump((data,predictions), f)
 
 main()
