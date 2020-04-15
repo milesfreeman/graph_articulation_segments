@@ -5,7 +5,7 @@ import sys
 import glob
 
 def gen_data(which, indices, cat):
-    labeller = {'S' : 0, 'T' : 1, 'R' : 2}
+    # labeller = {'S' : 0, 'T' : 1, 'R' : 2}
     PCD = []
     LABEL = []
     MASK = []
@@ -15,7 +15,7 @@ def gen_data(which, indices, cat):
     for index in indices:
         exists = glob.glob('PCD_XYZ/' + cat + '/' + index + '*.txt')
         if not bool(exists):
-            print(f"We have a fuckup: {index}")
+            print(f"We have a fuckup: {cat}.{index}")
             continue
         for ext in extenstions:
             cloud = []
@@ -38,7 +38,7 @@ def gen_data(which, indices, cat):
                 x = line.split()
                 if int(x[0]) > highest : highest = int(x[0])
                 masks[int(x[0])][i] = 1
-                labels[i] = labeller[x[1]]
+                labels[i] = int(x[1])
             conf[ : highest + 1] = 1.0
         PCD.append(cloud)
         LABEL.append(list(labels))

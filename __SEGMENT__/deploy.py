@@ -110,7 +110,7 @@ def main():
     data_file = '../TrainData_storage_furniture.pkl'
     with open(data_file, 'rb') as f:
         data = pk.load(f)
-    predictions = predict(data)
+    predictions = predict(data[])
     with open('mediary.pkl', 'wb') as f:
         pk.dump((data,predictions), f)
 

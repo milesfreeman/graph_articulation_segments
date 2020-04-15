@@ -111,12 +111,13 @@ def read_json(fname):
             motion = ('S', None, None, None)
         elif unit['joint'] == 'hinge':
             motion = ('R', unit['jointData']['axis']['origin'], unit['jointData']['axis']['direction'], None if unit['jointData']['limit']['noLimit'] else (unit['jointData']['limit']['a'], unit['jointData']['limit']['b']))
-        elif unit['joint'] == 'slider':
+        elif unit['joint'] in ['slider', 'slider+']:
             motion = ('T', unit['jointData']['axis']['origin'], unit['jointData']['axis']['direction'], None if unit['jointData']['limit']['noLimit'] else (unit['jointData']['limit']['a'], unit['jointData']['limit']['b']))
         else:
-            print(f"unkwon joint type = {unit['joint']}")
+            # print(f"unkwon joint type = {unit['joint']}")
             motion = ('S', None, None, None)
         units.append((unit['name'], parts, motion))
+        # print(unit['name'])
     return units
 
 def align_mesh_pcd(directory):
@@ -140,7 +141,7 @@ def align_mesh_pcd(directory):
     for x in mesh_adresses:
         # print(x)
         mesh = o3d.io.read_triangle_mesh(x)
-        mesh.compute_triangle_normals()
+        mesh.compute_triangle_normals( )
         # print(len(mesh.vertices))
         # print(len(mesh.triangles))
         # mesh.paint_uniform_color([1,0,0])
@@ -172,31 +173,41 @@ def align_mesh_pcd(directory):
 
 def poses(categorie, directory, N, p=1.0, visualize=False):
     colormap = {0: [0, 0, 0], 1: [1, 0, 0], 2: [1, 0.5, 0], 3: [1, 1, 0], 4: [0.5, 1, 0], 5: [0.5, 0.5, 0], 6: [0, 1, 0], 7: [0, 1, 0.5], 8: [0, 0.5, 1], 9: [0, 1, 1], 10: [0, 0.5, 0.5], 11: [0, 0, 1], 12: [1, 0, 1], 13: [0.5, 0, 0.5], 14: [0.5, 0, 1], 15: [1, 0, 0.5], 16: [0.5, 0.5, 0.5]}
-
     movement = read_json(directory + '/mobility_v2.json')
     mesh_dicc, pcd_dicc = align_mesh_pcd(directory)
-
+    # for storage furniture only...
+    labeller = {'cabinet_door' : 1, 'cabinet_door_surface' : '1',
+                'drawer' : 2, 'drawer_box' : 2, 'drawer_front' : 2,
+                'shelf' : 3,
+                'cabinet_frame' : 4, 'panel_base' : 4, 'countertop' : 4,
+                'caster_yoke' : 5, 'wheel' : 5,
+                'handle' : 6,
+                'mirror' : 7, 'glass' : 7,
+                'book' : 0 , 'other_leaf' : 0}
+    # print(directory)
     for i in range(N+1):
         mesh = []
         pcd = []
         labels = []
         axes = []
         for j, unit in enumerate(movement):
+            laybel = labeller[unit[0]]
             if unit[2][0] != 'S':
                 if i>0 and np.random.rand() > p:
                     mesh.extend(update_meshes(unit[1], mesh_dicc, colormap[j]))
-                    points,reiburu = examine_pcd(unit[1], pcd_dicc, j, 'S')
+                    points,reiburu = examine_pcd(unit[1], pcd_dicc, j, laybel)
                     pcd.extend(points)
                     labels.extend(reiburu)
                     continue
                 linfo = unit[2]
+                # print(linfo)
                 if linfo[0] == 'T':
                     start = linfo[3][0]
                     end = linfo[3][1]
                     if not i: distance = start
                     else: distance = start + np.random.rand() * (end - start)
                     mesh.extend(update_meshes(unit[1], mesh_dicc, colormap[j%13], trans, [linfo[2], distance]))
-                    points,reiburu = examine_pcd(unit[1], pcd_dicc, j, 'T', trans, [linfo[2], distance])
+                    points,reiburu = examine_pcd(unit[1], pcd_dicc, j, laybel, trans, [linfo[2], distance])
                     pcd.extend(points)
                     labels.extend(reiburu)
                     if visualize:
@@ -214,7 +225,7 @@ def poses(categorie, directory, N, p=1.0, visualize=False):
                         if not i: angle = start
                         else: angle = start + np.random.rand() * (end - start)
                     mesh.extend(update_meshes(unit[1], mesh_dicc, colormap[j%13], rotate, [linfo[1], linfo[2], angle]))
-                    points, reiburu = examine_pcd(unit[1], pcd_dicc, j,  'R', rotate, [linfo[1], linfo[2], angle])
+                    points, reiburu = examine_pcd(unit[1], pcd_dicc, j,  laybel, rotate, [linfo[1], linfo[2], angle])
                     pcd.extend(points)
                     labels.extend(reiburu)
                     if visualize:
@@ -225,7 +236,7 @@ def poses(categorie, directory, N, p=1.0, visualize=False):
                         axes.append(line)
             else:
                 mesh.extend(update_meshes(unit[1], mesh_dicc, colormap[j%13]))
-                points,reiburu = examine_pcd(unit[1], pcd_dicc, j, 'S')
+                points,reiburu = examine_pcd(unit[1], pcd_dicc, j, laybel)
                 pcd.extend(points)
                 labels.extend(reiburu)
         
@@ -233,7 +244,8 @@ def poses(categorie, directory, N, p=1.0, visualize=False):
             gcloud = o3d.geometry.PointCloud()
             gcloud.points = o3d.utility.Vector3dVector(pcd) 
             o3d.visualization.draw_geometries(mesh + axes + [gcloud], directory + '_' + ('CLOSED' if not i else str(i)))
-        else: save_pose(categorie, directory + '_' + ('CLOSED' if not i else str(i)), mesh, pcd, labels)
+        else: 
+            save_pose(categorie, directory + '_' + ('CLOSED' if not i else str(i)), mesh, pcd, labels)
 
 def examine_pcd(part_list, pcd_dicc, i, trs, transformation=None, args=None):
     labels = []
@@ -272,8 +284,8 @@ def save_pose(categorie, name, mesh, pcd, pcd_label):
             f.append(list(map(lambda x: int(x) + index, face)))
         if nf is None: nf = np.asarray(part.triangle_normals)
         else : nf = np.concatenate([nf, np.asarray(part.triangle_normals)])
-        index += len(v)
-    # print('os.listdir()')
+        index += len(np.asarray(part.vertices))
+    # print(f"Vertices : {len(v)}, Faces : {len(f)}")
     os.chdir('MESH_MATLAB/' + categorie)
     matlab.savemat(name + '.mat', {'vertices' : v,
                                    'faces' : f,
@@ -304,9 +316,12 @@ def main():
     
     with open('../Category_indices.pkl', 'rb') as f:
         models = pk.load(f)
+    # with open('plox.txt', 'r') as f:
+    #     ja_feitos = f.readlines()
 
     for model in models[categorie]:
+        # if model in ja_feitos: continue
+        # if model in ['41434', '40069', '41045'] : continue
         poses(categorie, model, 16, visualize=0)
 
-if __name__== "__main__":
-    main()
+main()
