@@ -1,13 +1,34 @@
-<<<<<<< HEAD
+<<<<<<<<<<<<<<<< HEAD
+==============================================================================
 SEGMENTATION METHODS:
-    - Continuous Random Field
-    - Edge Convolution GNN (Pytorch)
-    - SGPN Mask Instance Prediction
-    - Partnet (Pytorch / TF)
+    - [x] Continuous Random Field
+    - [x] Edge Convolution GNN (Pytorch)
+    - [x] SGPN Mask Instance Prediction
+    - [3] Partnet (Pytorch / TF)
 
 DATA GENERATION:
-    - Articulate dataset (RPMNet/Sapien)
-    - KinectSimulator -> noisy data (various poses)
-=======
+    - [1] Articulate dataset (RPMNet/Sapien) -> Mesh + PCD
+    - [2] KinectSimulator -> noisy data (various poses)
+
+SEGMENTOR:
+    - [0] Input Data: 
+	- Dropbox (preprocessed: storage_furniture, chair, lamp)
+	- Sapien (use folder 1,2)
+    - [1] PredictRaw.py -> temp.pkl 
+	- Use Docker container for GPU
+    - [2] ProcessPred.py -> 
+                <CATEGORY NAME>
+		|-models (Xi Yi Zi\n for each point in model)
+			|model_{key}.pts
+                        |... 
+		|-labels (<Instance> <Class>\n for each point in model)
+			|labels_{key}.txt
+			|... 
+		|part_instances.json ({ i : 'Part Type} mapping index to class)
+			
+
+	
+===============================================================================
 # graph_articulation_segments
->>>>>>> 400ce2cd32c37b634a93631a16b02fa522b82e20
+>>>>>>>>>>>>>>>> 400ce2cd32c37b634a93631a16b02fa522b82e20
+
