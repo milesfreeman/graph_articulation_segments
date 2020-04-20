@@ -1,0 +1,6 @@
+{   "0":  ["cabinet_door", "cabinet_door_surface"],
+    "1":  ["drawer", "handle", "drawer_box"],
+    "2":  ["mirror", "glass"],
+    "3":  ["shelf", "cabinet_frame", "panel_base", "drawer_front"],
+    "4":  ["wheel", "caster_yoke"],
+    "-1": ["other_leaf", "book"]}
