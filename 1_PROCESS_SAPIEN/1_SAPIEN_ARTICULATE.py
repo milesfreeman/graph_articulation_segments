@@ -143,11 +143,11 @@ def align_mesh_pcd(directory):
     for x in mesh_adresses:
         # print(x)
         mesh = o3d.io.read_triangle_mesh(x)
-        mesh.compute_triangle_normals( )
+        mesh.compute_triangle_normals()
         # print(len(mesh.vertices))
         # print(len(mesh.triangles))
         # mesh.paint_uniform_color([1,0,0])
-        # o3d.visualization.draw_geometries([mesh])
+        o3d.visualization.draw_geometries([mesh], point_show_normal=1)
         meshes.append(mesh)
     keys = list(map(lambda x: x[0], part_pts.items()))
     # print(len(meshes))
@@ -327,6 +327,6 @@ def main():
     for model in models[categorie]:
         # if model in ja_feitos: continue
         # if model in ['41434', '40069', '41045'] : continue
-        poses(categorie, model, 16, visualize=0)
+        poses(categorie, model, 16, visualize=1)
 
 main()
