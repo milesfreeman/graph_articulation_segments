@@ -13,7 +13,7 @@ DATA GENERATION:
 SEGMENTOR:
     - [0] Input Data: 
 	- Dropbox (preprocessed: storage_furniture, chair, lamp)
-	- Sapien (use folder 1,2)
+	- [Sapien](https://sapien.ucsd.edu) (use folder 1,2)
     - [1] PredictRaw.py -> temp.pkl 
 	- Use Docker container for GPU
     - [2] ProcessPred.py -> 
@@ -24,10 +24,7 @@ SEGMENTOR:
 		|-labels (<Instance> <Class>\n for each point in model)
 			|labels_{key}.txt
 			|... 
-		|part_instances.json ({ i : 'Part Type} mapping index to class)
-			
-
-	
+		|part_instances.json ({ i : 'Part Type} mapping index to class)	
 ===============================================================================
 # graph_articulation_segments
 >>>>>>>>>>>>>>>> 400ce2cd32c37b634a93631a16b02fa522b82e20
