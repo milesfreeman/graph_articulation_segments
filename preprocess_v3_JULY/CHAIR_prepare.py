@@ -241,13 +241,10 @@ def mesh_angles(parts):
 with open('../ChairIndices.pkl', 'rb') as f:
     indices = pk.load(f)
     for index in indices:
-        if not index in ['39628', '39138', '43142', '762','41438','3171','39485','39551','38287','41609','37954','3193','38357','2554',
-'42057','44445','3091','3143','37834','41610','38994','43074','3140','36250','39988','44876','37825','2627','38519','2364','39432','39392',
-'40067','36845','41434','3028','38325','41653','723','37247','2471','35063','41153','39015','38510','36409','44441','2320','40168', '38486', '2780']:
-            print(index)
-            parts = process_mesh(index)
-            retrieve_save_pts(parts, index)
-            mesh_angles(parts)
-            print(f"complete: {index}")
+       
+        parts = process_mesh(index)
+        retrieve_save_pts(parts, index)
+        mesh_angles(parts)
+           
         
 
