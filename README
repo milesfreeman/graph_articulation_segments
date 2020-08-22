@@ -1,21 +1,19 @@
-<<<<<<<<<<<<<<<< HEAD
-==============================================================================
-SEGMENTATION METHODS:
+DATA GENERATION:
+    - [1] Articulate dataset (RPMNet/Sapien) -> Mesh + PCD
+    - [2] KinectSimulator -> noisy data (various poses)
+    
+POINT CLOUD INSTANCE SEGMENTATION METHODS:
     - [x] Continuous Random Field
     - [x] Edge Convolution GNN (Pytorch)
     - [x] SGPN Mask Instance Prediction
     - [3] Partnet (Pytorch / TF)
-
-DATA GENERATION:
-    - [1] Articulate dataset (RPMNet/Sapien) -> Mesh + PCD
-    - [2] KinectSimulator -> noisy data (various poses)
 
 SEGMENTOR:
     - [0] Input Data: 
 	- Dropbox (preprocessed: storage_furniture, chair, lamp)
 	- [Sapien](https://sapien.ucsd.edu) (use folder 1,2)
     - [1] PredictRaw.py -> temp.pkl 
-	- Use Docker container for GPU
+	- Use Docker container for GPU (tf 1.13-gpu)
     - [2] ProcessPred.py -> 
                 <CATEGORY NAME>
 		|-models (Xi Yi Zi\n for each point in model)
@@ -25,7 +23,5 @@ SEGMENTOR:
 			|labels_{key}.txt
 			|... 
 		|part_instances.json ({ i : 'Part Type} mapping index to class)	
-===============================================================================
-# graph_articulation_segments
->>>>>>>>>>>>>>>> 400ce2cd32c37b634a93631a16b02fa522b82e20
+
 
